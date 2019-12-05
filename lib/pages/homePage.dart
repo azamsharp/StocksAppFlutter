@@ -9,7 +9,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  double _offsetY = 100;
   ExpandedState _expandedState = ExpandedState.compact;
+
+  double _calculateOffset(delta, context) {
+    
+    final maxHeight = MediaQuery.of(context).size.height - 100; 
+    final newOffset = _offsetY + (delta) * (-1);
+    if (newOffset <= 100) {
+      return 100;
+    } else if(newOffset >= maxHeight) {
+      return maxHeight;
+    } else {
+      return newOffset; 
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +77,16 @@ class _HomePageState extends State<HomePage> {
         Positioned(
             bottom: 0,
             child: AnimatedContainer(
-                height: this._expandedState == ExpandedState.compact ? 100 : MediaQuery.of(context).size.height - 60,
-                duration: Duration(milliseconds: 1000),
-                curve: Curves.easeInOut,
-                child: NewsList(
+              height: _offsetY,
+              duration: Duration(milliseconds: 1),
+              curve: Curves.easeInOut,
+              child: NewsList(
                 expandedState: this._expandedState,
+                onPanUpdate: (dragDetails) {
+                  setState(() {
+                    _offsetY = _calculateOffset(dragDetails.primaryDelta, context);
+                  });
+                },
                 onHeaderTapped: () {
                   debugPrint("onHeaderTapped");
                   setState(() {

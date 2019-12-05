@@ -4,32 +4,27 @@ import 'package:flutter/material.dart';
 
 enum ExpandedState { compact, expanded }
 
-class NewsList extends StatelessWidget {
-  
-  final _newsImages = ["img1.png","img2.png","img3.png","img4.png"];
+class NewsList extends StatefulWidget {
+
   final Function onHeaderTapped;
+  final Function(DragUpdateDetails) onPanUpdate; 
   ExpandedState expandedState = ExpandedState.compact;
 
-  NewsList({this.onHeaderTapped, this.expandedState});
+  NewsList({this.onHeaderTapped, this.expandedState, this.onPanUpdate});
 
-  double _getHeightForExpandedState(BuildContext context) {
-    switch (this.expandedState) {
-      case ExpandedState.compact:
-        return MediaQuery.of(context).size.height - 100;
-      case ExpandedState.expanded:
-        return MediaQuery.of(context).size.height - 60;
-    }
-  }
+  @override 
+  _NewsListState createState() => _NewsListState(); 
+}
 
-  String _getRandomImage() {
-    final index = Random().nextInt(_newsImages.length - 1);
-    return 'images/${_newsImages[index]}';
-  }
+class _NewsListState extends State<NewsList> {
 
+  final _newsImages = ["img1.png","img2.png","img3.png","img4.png","img1.png","img2.png","img3.png","img4.png","img1.png","img2.png","img3.png","img4.png","img1.png","img2.png","img3.png","img4.png","img1.png","img2.png","img3.png","img4.png","img1.png","img2.png","img3.png","img4.png"];
+ 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: this.onHeaderTapped,
+      onVerticalDragUpdate: this.widget.onPanUpdate,
+      onTap: this.widget.onHeaderTapped,
       child: Container(
       decoration: BoxDecoration(
         color: Colors.grey[900], 
@@ -37,7 +32,7 @@ class NewsList extends StatelessWidget {
       ),
       padding: EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width,
-      height: _getHeightForExpandedState(context),
+      height: 800,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -71,7 +66,7 @@ class NewsList extends StatelessWidget {
                             fontSize: 25,
                             fontWeight: FontWeight.bold))
                   ]),
-                  trailing: Image.asset(_getRandomImage()),
+                  trailing: Image.asset("images/${_newsImages[index]}"),
                 );
               },
             ),
